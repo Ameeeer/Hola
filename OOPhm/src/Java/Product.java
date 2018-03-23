@@ -6,7 +6,7 @@ public class Product {
     int price;
     int count;
 
-    boolean existsOnStock () {
+    boolean existsOnStock() {
         return count > 0;
     }
 

@@ -10,20 +10,13 @@ public class Main {
     final static String FILENAME = "products.txt";
 
     public static void main(String[] args) throws FileNotFoundException {
-        Product p = new Product(77, "Бублики", 21, 8);
-        Product p1 = new Product(21, "dfgsdfg", 11, 8);
-        Product[] prs = new Product[2];
-        prs[0] = p;
-        prs[1] = p1;
 
         Product[] products = load(FILENAME);
+        Product product = getMostExpensiveProduct();
+        System.out.println(product.id + ", " + product.name + ", " + product.price + ", " + product.count);
+        SortirationbyPrice(products);
         printProducts(products);
-        System.out.println();
-        System.out.println();
-        getById(2);
-        getMostExpensiveProduct();
     }
-
 
     /**
      * Выводит на консоль информацию о содержимом массива продуктов
@@ -31,11 +24,8 @@ public class Main {
      * @param products продукты, которые будут распечатаны
      */
     static void printProducts(Product[] products) throws FileNotFoundException {
-        Scanner scanner = new Scanner(new FileInputStream(FILENAME));
-        while (scanner.hasNextLine()) {
-            String s = scanner.nextLine();
-            String[] elem = s.split(", ");
-            System.out.println(elem[0] + ", " + elem[1] + ", " + elem[2] + ", " + elem[3]);
+        for (int i = 0; i < products.length; i++) {
+            System.out.println(products[i].id + ", " + products[i].name + ", " + products[i].price + ", " + products[i].count);
         }
     }
 
@@ -47,12 +37,9 @@ public class Main {
      */
     static Product getById(int id) throws FileNotFoundException {
         Product[] products = load(FILENAME);
-        Scanner scanner = new Scanner(new FileInputStream(FILENAME));
-        while (scanner.hasNextLine()) {
-            String s = scanner.nextLine();
-            String[] elem = s.split(", ");
-            if (Integer.parseInt(elem[0]) == id) {
-                System.out.println(elem[0] + ", " + elem[1] + ", " + elem[2] + ", " + elem[3]);
+        for (int i = 0; i < products.length; i++) {
+            if (products[i].id == id) {
+                return products[i];
             }
         }
         return null;
@@ -61,29 +48,18 @@ public class Main {
     /**
      * Возвращает самый дорогой Product, имеющийся на складе
      *
+     * @param products
      * @return
      */
     static Product getMostExpensiveProduct() throws FileNotFoundException {
         Product[] products = load(FILENAME);
-        Scanner scanner = new Scanner(new FileInputStream(FILENAME));
-        Scanner scanner1 = new Scanner(new FileInputStream(FILENAME));
-        int maxprice = 0;
-        while (scanner.hasNextLine()){
-            String s = scanner.nextLine();
-            String[] elem = s.split(", ");
-            if (Integer.parseInt(elem[2]) > maxprice){
-                maxprice = Integer.parseInt(elem[2]);
+        Product productwithmaxprice = products[0];
+        for (int i = 0; i < products.length; i++) {
+            if (products[i].price > productwithmaxprice.price) {
+                productwithmaxprice= products[i];
             }
         }
-        while (scanner1.hasNextLine()){
-            String s1 = scanner1.nextLine();
-            String[] elem2 = s1.split(", ");
-            if (Integer.parseInt(elem2[2]) == maxprice){
-                System.out.println(elem2[0] + ", " + elem2[1] + ", " + elem2[2] + ", " + elem2[3]);
-            }
-        }
-
-        return null ;
+        return productwithmaxprice;
     }
 
 
@@ -118,5 +94,17 @@ public class Main {
         PrintWriter pw = new PrintWriter(new FileOutputStream("products.txt", true));
         pw.println(product.id + ", " + product.name + ", " + product.price + ", " + product.count);
         pw.close();
+    }
+
+    static void SortirationbyPrice(Product[] products) throws FileNotFoundException {
+        for (int i = 0; i < products.length; i++) {
+            for (int j = 0; j < products.length - 1; j++) {
+                if (products[j + 1].price < products[j].price) {
+                    Product product = products[j];
+                    products[j] = products[j+1];
+                    products[j+1] = product;
+                }
+            }
+        }
     }
 }
